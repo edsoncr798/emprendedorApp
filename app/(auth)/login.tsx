@@ -18,9 +18,9 @@ export default function LoginScreen() {
       return;
     }
 
-    // Validación del formato de email
+    // Validar formato de email solo si parece un email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (emailRegex.test(email) && !emailRegex.test(email)) {
       Alert.alert('Error', 'El formato del email no es válido');
       return;
     }
@@ -30,12 +30,9 @@ export default function LoginScreen() {
       await login(email, password);
       router.replace('/(tabs)');
     } catch (error: any) {
-      console.log('Error de Firebase:', error.code, error.message); // Para debug
       let mensajeError = 'Error al iniciar sesión. Intenta nuevamente.';
-      
-      // Traducir errores de Firebase a mensajes más amigables
       if (error.code === 'auth/user-not-found') {
-        mensajeError = 'El email no está registrado. Verifica tu correo electrónico.';
+        mensajeError = 'El usuario no existe. Verifica tu email o nombre de usuario.';
       } else if (error.code === 'auth/wrong-password') {
         mensajeError = 'La contraseña es incorrecta. Verifica tu contraseña.';
       } else if (error.code === 'auth/invalid-email') {
@@ -47,9 +44,8 @@ export default function LoginScreen() {
       } else if (error.code === 'auth/user-disabled') {
         mensajeError = 'Tu cuenta ha sido deshabilitada. Contacta al soporte.';
       } else if (error.code === 'auth/invalid-credential') {
-        mensajeError = 'Credenciales incorrectas. Verifica tu email y contraseña.';
+        mensajeError = 'Credenciales incorrectas. Verifica tu email, usuario y contraseña.';
       }
-      
       Alert.alert('Error de Autenticación', mensajeError);
     } finally {
       setLoading(false);
@@ -67,7 +63,7 @@ export default function LoginScreen() {
           <View style={styles.logoContainer}>
             <Image source={require('../../assets/images/JPG/LOGO-CEPRO.jpg')} style={styles.logoImage} resizeMode="contain" />
             <Text style={styles.appTitle}>Asistente contable</Text>
-            <Text style={styles.appSubtitle}>By ceproMaynas</Text>
+            <Text style={styles.appSubtitle}>By cetproMaynas</Text>
           </View>
 
           {/* Header */}
@@ -82,7 +78,8 @@ export default function LoginScreen() {
               <Mail size={20} color="#6B7280" />
               <TextInput
                 style={styles.input}
-                placeholder="Correo electrónico"
+                placeholder="Correo electrónico o nombre de usuario"
+                placeholderTextColor="#ccc"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -96,6 +93,7 @@ export default function LoginScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="Contraseña"
+                placeholderTextColor="#ccc"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}

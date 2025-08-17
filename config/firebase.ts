@@ -1,7 +1,10 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { getAuth, connectAuthEmulator } from 'firebase/auth';
+import { getAuth, connectAuthEmulator, initializeAuth } from 'firebase/auth';
+import { getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+import type { Auth } from 'firebase/auth';
 
 // Configuración de Firebase - Reemplaza con tus credenciales reales
 
@@ -20,7 +23,16 @@ const app = initializeApp(firebaseConfig);
 
 // Inicializar servicios
 export const db = getFirestore(app);
-export const auth = getAuth(app);
+
+let auth: Auth;
+if (Platform.OS === 'web') {
+  auth = getAuth(app);
+} else {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+  });
+}
+export { auth };
 
 // Solo para desarrollo - conectar a emuladores locales
 if (__DEV__ && Platform.OS !== 'web') {

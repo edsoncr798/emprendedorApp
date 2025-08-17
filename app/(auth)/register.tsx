@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { Link, router } from 'expo-router';
@@ -7,6 +7,7 @@ import { UserPlus, Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -15,8 +16,15 @@ export default function RegisterScreen() {
   const { register } = useAuth();
 
   const handleRegister = async () => {
-    if (!email || !password || !confirmPassword) {
+    if (!email || !username || !password || !confirmPassword) {
       Alert.alert('Error', 'Por favor completa todos los campos');
+      return;
+    }
+
+    // Validación del formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert('Error', 'El formato del email no es válido.');
       return;
     }
 
@@ -32,10 +40,24 @@ export default function RegisterScreen() {
 
     setLoading(true);
     try {
-      await register(email, password);
+      await register(email, password, username);
       router.replace('/(tabs)');
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      let mensajeError = 'Error al crear la cuenta. Intenta nuevamente.';
+      if (error.code === 'auth/email-already-in-use') {
+        mensajeError = 'El email ya está registrado. Usa otro correo electrónico.';
+      } else if (error.code === 'auth/invalid-email') {
+        mensajeError = 'El formato del email no es válido.';
+      } else if (error.code === 'auth/weak-password') {
+        mensajeError = 'La contraseña es demasiado débil. Usa al menos 6 caracteres.';
+      } else if (error.code === 'auth/network-request-failed') {
+        mensajeError = 'Error de conexión. Verifica tu internet e intenta nuevamente.';
+      } else if (error.code === 'auth/operation-not-allowed') {
+        mensajeError = 'No se puede crear la cuenta en este momento. Intenta más tarde.';
+      } else if (error.code === 'auth/too-many-requests') {
+        mensajeError = 'Demasiados intentos fallidos. Intenta más tarde.';
+      }
+      Alert.alert('Error de Registro', mensajeError);
     } finally {
       setLoading(false);
     }
@@ -47,7 +69,7 @@ export default function RegisterScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
-        <View style={styles.content}>
+        <ScrollView contentContainerStyle={[styles.content, { flexGrow: 1 }]} keyboardShouldPersistTaps="handled">
           {/* Header */}
           <View style={styles.header}>
             <View style={styles.logoContainer}>
@@ -64,6 +86,7 @@ export default function RegisterScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="Correo electrónico"
+                placeholderTextColor="#ccc"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -73,10 +96,24 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputContainer}>
+              <UserPlus size={20} color="#6B7280" />
+              <TextInput
+                style={styles.input}
+                placeholder="Nombre de usuario"
+                placeholderTextColor="#ccc"
+                value={username}
+                onChangeText={setUsername}
+                autoCapitalize="none"
+                autoComplete="username"
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
               <Lock size={20} color="#6B7280" />
               <TextInput
                 style={styles.input}
                 placeholder="Contraseña (mínimo 6 caracteres)"
+                placeholderTextColor="#ccc"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
@@ -96,6 +133,7 @@ export default function RegisterScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="Confirmar contraseña"
+                placeholderTextColor="#ccc"
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 secureTextEntry={!showConfirmPassword}
@@ -142,7 +180,7 @@ export default function RegisterScreen() {
               ✅ Acceder desde cualquier dispositivo
             </Text>
           </View>
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -157,9 +195,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    flex: 1,
     paddingHorizontal: 24,
-    justifyContent: 'center',
+    paddingVertical: 24,
   },
   header: {
     alignItems: 'center',

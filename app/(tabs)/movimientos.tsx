@@ -165,6 +165,7 @@ export default function MovimientosScreen() {
           <TextInput
             style={styles.searchInput}
             placeholder="Buscar movimientos..."
+            placeholderTextColor="#ccc"
             value={busqueda}
             onChangeText={setBusqueda}
           />
@@ -288,6 +289,7 @@ export default function MovimientosScreen() {
               <TextInput
                 style={styles.formInput}
                 placeholder="Ej: Venta de productos, Pago de alquiler..."
+                placeholderTextColor="#ccc"
                 value={nuevoMovimiento.concepto}
                 onChangeText={(text) => setNuevoMovimiento({ ...nuevoMovimiento, concepto: text })}
               />
@@ -319,6 +321,7 @@ export default function MovimientosScreen() {
                 <TextInput
                   style={styles.montoInput}
                   placeholder="Monto"
+                  placeholderTextColor="#ccc"
                   value={nuevoMovimiento.monto.toString()}
                   onChangeText={(text) => setNuevoMovimiento({ ...nuevoMovimiento, monto: parseFloat(text) || 0 })}
                   keyboardType="numeric"

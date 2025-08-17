@@ -70,7 +70,7 @@ export default function HomeScreen() {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.greeting}>¡Hola {user?.email?.split('@')[0]}!</Text>
+          <Text style={styles.greeting}>¡Hola {user?.username ? user.username : user?.email?.split('@')[0]}!</Text>
           <Text style={styles.subtitle}>Aquí tienes el resumen de tu negocio</Text>
         </View>
 

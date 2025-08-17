@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { Search, BookOpen, Lightbulb } from 'lucide-react-native';
+import { useAuth } from '../../contexts/AuthContext';
+import { Redirect } from 'expo-router';
 
 const glosarioTerminos = [
   {
@@ -172,6 +174,11 @@ const categorias = ['Todos', 'Básico', 'Intermedio', 'Avanzado', 'Tributario'];
 export default function GlosarioScreen() {
   const [busqueda, setBusqueda] = useState('');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('Todos');
+  const { user, loading } = useAuth();
+
+  if (!loading && !user) {
+    return <Redirect href="/(auth)/login" />;
+  }
 
   const filtrarTerminos = () => {
     let terminosFiltrados = glosarioTerminos;
@@ -207,6 +214,7 @@ export default function GlosarioScreen() {
           <TextInput
             style={styles.searchInput}
             placeholder="Buscar términos..."
+            placeholderTextColor="#ccc"
             value={busqueda}
             onChangeText={setBusqueda}
           />

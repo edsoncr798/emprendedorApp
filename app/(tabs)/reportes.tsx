@@ -439,12 +439,14 @@ export default function ReportesScreen() {
 
             {/* Botón de Exportar */}
             <View style={styles.exportContainer}>
-              <TouchableOpacity style={styles.exportButton} onPress={exportarCSV}>
-                <Text style={styles.exportButtonText}>Descargar CSV</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.exportButton} onPress={exportarPDF}>
-                <Text style={styles.exportButtonText}>Descargar PDF</Text>
-              </TouchableOpacity>
+              <View style={{ flexDirection: 'row', gap: 12, marginBottom: 8 }}>
+                <TouchableOpacity style={styles.exportButton} onPress={exportarCSV}>
+                  <Text style={styles.exportButtonText}>Descargar CSV</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.exportButton} onPress={exportarPDF}>
+                  <Text style={styles.exportButtonText}>Descargar PDF</Text>
+                </TouchableOpacity>
+              </View>
               <Text style={styles.exportSubtext}>
                 Guarda este reporte para llevarlo a tu contador o revisar más tarde
               </Text>

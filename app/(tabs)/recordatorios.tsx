@@ -370,6 +370,7 @@ export default function RecordatoriosScreen() {
               <TextInput
                 style={styles.formInput}
                 placeholder="Ej: Pago de alquiler, Recibo de luz..."
+                placeholderTextColor="#ccc"
                 value={nuevoRecordatorio.titulo}
                 onChangeText={(text) => setNuevoRecordatorio({ ...nuevoRecordatorio, titulo: text })}
               />
@@ -379,6 +380,7 @@ export default function RecordatoriosScreen() {
               <TextInput
                 style={styles.formInput}
                 placeholder="Detalles adicionales..."
+                placeholderTextColor="#ccc"
                 value={nuevoRecordatorio.descripcion}
                 onChangeText={(text) => setNuevoRecordatorio({ ...nuevoRecordatorio, descripcion: text })}
                 multiline
@@ -392,6 +394,7 @@ export default function RecordatoriosScreen() {
                 <TextInput
                   style={styles.montoInput}
                   placeholder="0.00"
+                  placeholderTextColor="#ccc"
                   value={nuevoRecordatorio.monto.toString()}
                   onChangeText={(text) => setNuevoRecordatorio({ ...nuevoRecordatorio, monto: parseFloat(text) || 0 })}
                   keyboardType="numeric"
@@ -403,6 +406,7 @@ export default function RecordatoriosScreen() {
               <TextInput
                 style={styles.formInput}
                 placeholder="YYYY-MM-DD (ej: 2025-01-30)"
+                placeholderTextColor="#ccc"
                 value={nuevoRecordatorio.fechaVencimiento}
                 onChangeText={(text) => setNuevoRecordatorio({ ...nuevoRecordatorio, fechaVencimiento: text })}
               />
